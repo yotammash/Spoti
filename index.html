@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spotify Playlist → טבלת BPM/Key</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header class="container">
+    <h1>Spotify Playlist → טבלת BPM/Key</h1>
+    <p class="muted">מכניסים קישור לפלייליסט, מתחברים לספוטיפיי, ומקבלים טבלה להורדה כ־Excel.</p>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>הגדרות התחברות (PKCE)</h2>
+      <div class="settings-grid">
+        <label>
+          <span>Client ID (מספוטיפיי):</span>
+          <input id="clientId" type="text" placeholder="לדוגמה: 123abc..." />
+        </label>
+        <label>
+          <span>Redirect URI (כמו ברישום באפליקציה):</span>
+          <input id="redirectUri" type="text" placeholder="http://localhost:8080/" />
+        </label>
+      </div>
+      <div class="row">
+        <button id="saveSettingsBtn">שמירת הגדרות</button>
+        <button id="loginBtn" class="primary">התחברות עם ספוטיפיי</button>
+        <span id="authStatus" class="status">לא מחובר</span>
+      </div>
+      <details class="hint">
+        <summary>איך מגדירים Client ID ו־Redirect URI?</summary>
+        <ol>
+          <li>נכנסים ל־<a href="https://developer.spotify.com/dashboard" target="_blank" rel="noreferrer">Spotify Developer Dashboard</a> ויוצרים אפליקציה.</li>
+          <li>מעתיקים את ה־Client ID לפה.</li>
+          <li>מגדירים Redirect URI זהה לזה שמופיע פה (למשל: <code>http://localhost:8080/</code>), ושומרים גם שם וגם כאן.</li>
+          <li>מריצים שרת סטטי מקומי (לדוגמה <code>python3 -m http.server 8080</code>) ופותחים את <code>http://localhost:8080/</code>.</li>
+        </ol>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2>פלייליסט</h2>
+      <div class="row">
+        <input id="playlistInput" type="text" class="grow" placeholder="הדביקו קישור לפלייליסט (open.spotify.com/playlist/… או spotify:playlist:…)" />
+        <button id="fetchBtn" class="primary">משיכה</button>
+      </div>
+      <p class="muted small">היישום יביא: שם האומן | שם הטראק | סוג שחרור (אלבום/EP/סינגל) ואם יש עוד טראקים, BPM, מפתח.</p>
+    </section>
+
+    <section class="panel">
+      <div class="row space-between">
+        <h2>תוצאות</h2>
+        <div class="row gap">
+          <button id="downloadXlsxBtn" disabled>הורדת Excel</button>
+          <button id="clearBtn" class="ghost">ניקוי</button>
+        </div>
+      </div>
+      <div id="resultsInfo" class="muted"></div>
+      <div class="table-wrapper">
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>שם האומן</th>
+              <th>שם הטראק</th>
+              <th>שחרור</th>
+              <th>BPM</th>
+              <th>מפתח</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container muted small">
+    <p>טיפ: EP מזוהה כאשר סוג השחרור של Spotify הוא <code>single</code> אבל יש יותר מטרק אחד (total_tracks &gt; 1). סינגל = <code>single</code> עם טרק אחד. אלבום = <code>album</code>.</p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
